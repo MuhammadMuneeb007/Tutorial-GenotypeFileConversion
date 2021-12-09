@@ -1,0 +1,180 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PED-MAP &#8212; GenotypeFilesConvertor 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="GEN-SAMPLE" href="GEN-SAMPLE.html" />
+    <link rel="prev" title="BED-BIM-FAM" href="BED-BIM-FAM.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="ped-map">
+<h1>PED-MAP<a class="headerlink" href="#ped-map" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="ped-map-to-vcf">
+<h2>PED-MAP to VCF<a class="headerlink" href="#ped-map-to-vcf" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">./plink --file input_file --recode vcf --out output_file</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="ped-map-to-raw">
+<h2>PED-MAP to RAW<a class="headerlink" href="#ped-map-to-raw" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">./plink --file input_file --recodeA --out output_file</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="ped-map-to-bed-bim-fam">
+<h2>PED-MAP to BED-BIM-FAM<a class="headerlink" href="#ped-map-to-bed-bim-fam" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">./plink --file input_file --make-bed --out output_file</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="ped-map-to-gen-sample">
+<h2>PED-MAP to GEN-SAMPLE<a class="headerlink" href="#ped-map-to-gen-sample" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">./plink --file  input_file --export oxford --out output_file</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="ped-map-to-23andme">
+<h2>PED-MAP to 23andme<a class="headerlink" href="#ped-map-to-23andme" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span>Input file should not include extension
+<span class="go">1. Convert PED-MAP to BED-BIM-FAM  --&gt; PED-MAPtoBED-BIM-FAM()</span>
+<span class="go">./plink --file input_file --make-bed --out output_file</span>
+
+<span class="go">2. Convert BED-BIM-FAM to 23andme --&gt; BED-BIM-FAMto23andme()</span>
+<span class="go">See BED-BIM-FAMto23andme</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="ped-map-to-ancestrydna">
+<h2>PED-MAP to AncestryDNA<a class="headerlink" href="#ped-map-to-ancestrydna" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span>Input file should not include extension
+<span class="go">1. Convert PED-MAP to VCF --&gt; PED-MAPtoVCF()</span>
+<span class="go">./plink --file input_file --recode vcf --out output_file</span>
+
+<span class="go">2. Convert VCF to AncestryDNA --&gt; VCFtoAncestryDNA()</span>
+<span class="go">See VCFtoAncestryDNA</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="ped-map-to-haps-legend-sample">
+<h2>PED-MAP to HAPS-LEGEND-SAMPLE<a class="headerlink" href="#ped-map-to-haps-legend-sample" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span>Input file should not include extension
+<span class="go">1. Convert PED-MAP to VCF --&gt; PED-MAPtoVCF()</span>
+<span class="go">./plink --file input_file --recode vcf --out output_file</span>
+
+<span class="go">2. Convert VCF to HAPS-LEGEND-SAMPLE --&gt; VCFtoHAPS-LEGEND-SAMPLE()</span>
+<span class="go">bcftools convert output_file.vcf  -h  output_file2</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">GenotypeFilesConvertor</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="VCF.html">VCF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="BED-BIM-FAM.html">BED-BIM-FAM</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">PED-MAP</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ped-map-to-vcf">PED-MAP to VCF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ped-map-to-raw">PED-MAP to RAW</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ped-map-to-bed-bim-fam">PED-MAP to BED-BIM-FAM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ped-map-to-gen-sample">PED-MAP to GEN-SAMPLE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ped-map-to-23andme">PED-MAP to 23andme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ped-map-to-ancestrydna">PED-MAP to AncestryDNA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ped-map-to-haps-legend-sample">PED-MAP to HAPS-LEGEND-SAMPLE</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="GEN-SAMPLE.html">GEN-SAMPLE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="23andme.html">23andme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HAPS-LEGEND-SAMPLE.html">HAPS-LEGEND-SAMPLE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RAW.html">RAW</a></li>
+<li class="toctree-l1"><a class="reference internal" href="AncestryDNA.html">AncestryDNA</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="BED-BIM-FAM.html" title="previous chapter">BED-BIM-FAM</a></li>
+      <li>Next: <a href="GEN-SAMPLE.html" title="next chapter">GEN-SAMPLE</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Muhammad Muneeb.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/PED-MAP.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

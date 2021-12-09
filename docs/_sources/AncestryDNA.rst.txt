@@ -1,0 +1,132 @@
+AncestryDNA
+===========
+
+
+
+AncestryDNA to PED-MAP
+------------------------
+
+
+.. code-block:: console
+
+   #1. Convert AncestryDNA files to 23andme --> AncestryDNAto23andme()
+   #2. Convert 23andme files to BED-BIM-FAM --> 23andmetoBED-BIM-FAM()
+   #That function will generates three files 23andmetoBED.bed, 23andmetoBED.bim, and 23andmetoBED.fam
+   # Step 3 
+   ./plink --bfile 23andmetoBED --recode vcf --out output_file
+    
+
+   
+   
+
+AncestryDNA to RAW
+------------------------
+
+.. code-block:: console
+
+   #1. Convert AncestryDNA files to 23andme --> AncestryDNAto23andme()
+   #2. Convert 23andme files to BED-BIM-FAM --> 23andmetoBED-BIM-FAM()
+   #That function will generates three files 23andmetoBED.bed, 23andmetoBED.bim, and 23andmetoBED.fam
+   # Step 3 
+   ./plink --bfile 23andmetoBED --recodeA --out output_file
+
+
+
+AncestryDNA to BED-BIM-FAM
+------------------------------
+
+
+.. code-block:: console
+
+   #1. Convert AncestryDNA files to 23andme --> AncestryDNAto23andme()
+   #2. Convert 23andme files to BED-BIM-FAM --> 23andmetoBED-BIM-FAM()
+   #That function will generates three files 23andmetoBED.bed, 23andmetoBED.bim, and 23andmetoBED.fam
+ 
+
+
+
+AncestryDNA to GEN-SAMPLE
+------------------------------
+
+
+.. code-block:: console
+
+   #1. Convert AncestryDNA files to 23andme --> AncestryDNAto23andme()
+   #2. Convert 23andme files to BED-BIM-FAM --> 23andmetoBED-BIM-FAM()
+   #That function will generates three files 23andmetoBED.bed, 23andmetoBED.bim, and 23andmetoBED.fam
+   # Step 3 
+   ./plink --bfile 23andmetoBED  --export oxford --out output_file
+ 
+
+
+
+AncestryDNA to 23andme
+------------------------
+
+
+.. code-block:: console
+
+   #Make a directory in which 23andme files will be saved.
+   if not os.path.isdir("23andme"):
+      os.mkdir("23andme")
+  
+   #Read AncestryDNA files from the directory
+   _ancestry  = os.listdir('./AncestryDNA')
+   for files in _ancestry:
+      
+      if ".txt" in files and "temp" not in files:
+         if os.stat("./AncestryDNA"+os.sep+files).st_size == 0:
+         continue
+      else:
+         data = pd.read_csv("./AncestryDNA"+os.sep+files,sep="\t",skiprows=18)
+        
+         new = pd.DataFrame()
+         new['Rsid'] = data['rsid'].values
+         new['Chromosome'] = data['chromosome'].values
+         new['position'] = data['position'].values
+         
+         #Merge genotype data
+         new['genotype'] = data['allele2']+ data['allele1']
+         new['Chromosome'] = new['Chromosome'].replace(23, 'X')
+         new['Chromosome'] = new['Chromosome'].replace(24, 'Y')
+         new['Chromosome'] = new['Chromosome'].replace(25, 'XY')
+         new['Chromosome'] = new['Chromosome'].replace(26, 'MT')
+         
+         files = files.replace("ancestry","23andme")
+        
+         #Save each file in "23andme" directory
+         new.to_csv("./23andme"+os.sep+files, sep="\t",index=False,header=False) 
+
+
+
+AncestryDNA to VCF
+------------------------
+
+
+.. code-block:: console
+
+   #1. Convert AncestryDNA files to 23andme --> AncestryDNAto23andme()
+   #2. Convert 23andme files to BED-BIM-FAM --> 23andmetoBED-BIM-FAM()
+   #That function will generates three files 23andmetoBED.bed, 23andmetoBED.bim, and 23andmetoBED.fam
+   # Step 3 
+   ./plink --bfile 23andmetoBED --recode vcf --out output_file
+
+
+
+AncestryDNA to HAPS-LEGEND-SAMPLE
+--------------------------------------
+
+
+.. code-block:: console
+
+   #1. Convert AncestryDNA files to 23andme --> AncestryDNAto23andme()
+   #2. Convert 23andme files to BED-BIM-FAM --> 23andmetoBED-BIM-FAM()
+   #That function will generates three files 23andmetoBED.bed, 23andmetoBED.bim, and 23andmetoBED.fam
+   # Step 3 
+   ./plink --bfile 23andmetoBED --recode vcf --out output_file
+    
+   # Step 4
+   bcftools convert output_file.vcf  -h  output_file2
+   
+
+   

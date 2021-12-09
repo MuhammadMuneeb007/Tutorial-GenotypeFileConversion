@@ -1,0 +1,209 @@
+23andme
+=======
+
+23andme to PED-MAP
+------------------------
+
+
+.. code-block:: console
+
+   #1. Convert 23andme to BED-BIM-FAM --> 23andmetoBED-BIM-FAM()
+   #That function will generates three files 23andmetoBED.bed, 23andmetoBED.bim, and 23andmetoBED.fam
+   # Step 2 
+   ./plink --bfile 23andmetoBED --recode --out output_file
+   
+
+23andme to RAW
+------------------------
+
+.. code-block:: console
+
+   #1. Convert 23andme to BED-BIM-FAM --> 23andmetoBED-BIM-FAM()
+   #That function will generates three files 23andmetoBED.bed, 23andmetoBED.bim, and 23andmetoBED.fam
+   # Step 2 
+   ./plink --bfile 23andmetoBED --recodeA --out output_file
+
+
+
+23andme to BED-BIM-FAM
+------------------------
+
+
+.. code-block:: console
+
+
+   # Place 23andme files in a new directory. 
+   # input_file is actually input directory.
+    
+   if not os.path.isdir(input_file):
+      print("Directory "+input_file+" does not exists...! Kindly place 23andme files in that directory.")
+      exit(0)
+   files = []
+   allfiles = os.listdir("./"+input_file+"/")
+   personname = [] 
+   sexinfo = "0"
+   for loop in allfiles:
+      if ".23andme" in loop:
+      
+         data = loop.split(".")[0].split("_")
+         personname.append(data[0])
+         print(data)
+         if data[5] =="XX":
+            sexinfo = "2"
+         elif data[5] =="XY":
+            sexinfo = "1"
+         else:
+            sexinfo = "0" 
+         #os.rename("tutorialsdir","tutorialsdirectory")
+         os.system("./plink --23file ./"+input_file+os.sep+loop+" --snps-only --make-bed  --out ./"+input_file+os.sep+data[0])
+         if os.path.exists("./"+input_file+os.sep+data[0]+".fam"):
+            data2 = pd.read_csv("./"+input_file+os.sep+data[0]+".fam",header=None, sep="\s+")
+            data2[0] = data[0]
+            data2[1] = data[0]
+            data2[4] = sexinfo    
+            data2.to_csv("./"+input_file+os.sep+data[0]+".fam",sep="\t",header=False,index=False)
+   allfiles =  os.listdir("./"+input_file+"/")
+   count=0
+   files=[]
+   for loop in allfiles:
+      if ".txt" in loop and ".bed" not in loop and ".fam" not in loop and ".bim" not in loop:
+         print(loop)
+         x = loop.split("_")[0]
+         x = x + ".fam"
+         me = os.path.exists("./"+input_file+os.sep+x)
+         if me==True:
+            x = x.split(".")[0]
+            x = "./"+input_file+os.sep+x +".bed " + "./"+input_file+os.sep+x + ".bim " +  "./"+input_file+os.sep+x + ".fam"	
+            files.append(x)
+         else:
+            count=count+1
+         print(count," People removed due to missing fam file")
+   with open("./"+input_file+os.sep+"All.txt", "w") as filehandle:
+      for listitem in files:
+        filehandle.write('%s\n' % listitem)
+    
+   os.system("./plink --merge-list ./"+input_file+os.sep+"/All.txt --make-bed --out 23andmetoBED")
+    
+   if os.path.exists("23andmetoBED.bed"):
+      exit(0)
+   else:
+      allfiles =  os.listdir("./"+input_file+"/")
+      count=0
+      for loop in allfiles:
+         if ".bed" in loop:
+            x = loop
+            x = x.split(".")[0]
+    
+            command = "./plink --bfile ./"+input_file+os.sep+x+" --exclude 23andmetoBED-merge.missnp --make-bed --out ./"+input_file+os.sep + x
+            os.system(command)
+      allfiles =  os.listdir("./"+input_file+"/")
+      files=[]
+      
+      for loop in allfiles:
+         if ".txt" in loop and ".bed" not in loop and ".fam" not in loop and ".bim" not in loop:
+            print(loop)
+            x = loop.split("_")[0]
+            x = x + ".fam"
+            me = os.path.exists("./"+input_file+os.sep+x)
+            if me==True:
+               x = x.split(".")[0]
+               x = "./"+input_file+os.sep+x +".bed " + "./"+input_file+os.sep+x + ".bim " +  "./"+input_file+os.sep+x + ".fam"	
+               files.append(x)
+            else:
+               count=count+1
+            print(count," People removed due to missing fam file")
+      with open("./"+input_file+os.sep+"All.txt", "w") as filehandle:
+        for listitem in files:
+            filehandle.write('%s\n' % listitem)      
+      os.system("./plink --merge-list ./"+input_file+os.sep+"/All.txt --make-bed --out 23andmetoBED") 
+
+
+
+23andme to GEN-SAMPLE
+------------------------
+
+
+.. code-block:: console
+
+   #1. Convert 23andme to BED-BIM-FAM --> 23andmetoBED-BIM-FAM()
+   #That function will generates three files 23andmetoBED.bed, 23andmetoBED.bim, and 23andmetoBED.fam
+   # Step 2 
+   ./plink --bfile 23andmetoBED  --export oxford --out output_file
+ 
+
+
+
+23andme to VCF
+------------------------
+
+.. code-block:: console
+
+   #1. Convert 23andme to BED-BIM-FAM --> 23andmetoBED-BIM-FAM()
+   #That function will generates three files 23andmetoBED.bed, 23andmetoBED.bim, and 23andmetoBED.fam
+   # Step 2 
+   ./plink --bfile 23andmetoBED --recode vcf --out output_file
+
+
+
+23andme to AncestryDNA
+------------------------
+
+
+.. code-block:: console
+
+
+  
+   # Make a directory in which AncestryDNA files will be saved.
+   if not os.path.isdir("AncestryDNA"):
+      os.mkdir("AncestryDNA")
+   _23andmefiles  = os.listdir("./"+input_file)
+
+
+   #Read files one-by-one
+   for files in _23andmefiles:
+      # 23andme files are in .txt file format
+      if "23andme.txt" in files and "temp" not in files:
+
+         #Check size
+         if os.stat("./"+input_file+os.sep+files).st_size == 0:
+            continue
+         else:
+            print(files)
+            data = pd.read_csv("./"+input_file+os.sep+files,sep="\t", comment='#',header=None,low_memory=False)
+            new = pd.DataFrame()
+            new['Rsid'] = data[0].values
+            new['Chromosome'] = data[1].values
+            new['position'] = data[2].values
+
+
+            #Split genotype into allele1 and allele2
+            new['allele1'] = data[3].str[0]
+            new['allele2'] =data[3].str[1]
+
+            #Change chromosome numbers
+            new['Chromosome'] = new['Chromosome'].replace(23, 'X')
+            new['Chromosome'] = new['Chromosome'].replace(24, 'Y')
+            new['Chromosome'] = new['Chromosome'].replace(25, 'XY')
+            new['Chromosome'] = new['Chromosome'].replace(26, 'MT')
+
+
+            #Rename file name
+            files = files.replace("23andme","ancestry")
+            new.to_csv("./AncestryDNA"+os.sep+files, sep="\t",index=False)
+
+
+
+23andme to HAPS-LEGEND-SAMPLE
+--------------------------------
+
+
+.. code-block:: console
+
+   #1. Convert 23andme to BED-BIM-FAM --> 23andmetoBED-BIM-FAM()
+   #That function will generates three files 23andmetoBED.bed, 23andmetoBED.bim, and 23andmetoBED.fam
+   # Step 2 
+   ./plink --bfile 23andmetoBED --recode vcf --out output_file
+    
+   # Step 3
+   bcftools convert output_file.vcf  -h  output_file2
+   

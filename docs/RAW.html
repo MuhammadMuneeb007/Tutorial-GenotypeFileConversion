@@ -1,0 +1,280 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RAW &#8212; GenotypeFilesConvertor 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="AncestryDNA" href="AncestryDNA.html" />
+    <link rel="prev" title="HAPS-LEGEND-SAMPLE" href="HAPS-LEGEND-SAMPLE.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="raw">
+<h1>RAW<a class="headerlink" href="#raw" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="raw-to-ped-map">
+<h2>RAW to PED-MAP<a class="headerlink" href="#raw-to-ped-map" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">def converter(x):</span>
+<span class="gp">   #</span> Fill <span class="s2">&quot;NA&quot;</span> with <span class="s1">&#39;0 0&#39;</span>
+<span class="go">   x = x.fillna(&#39;0 0&#39;)</span>
+
+<span class="gp">   #</span> Convert numbers to integer
+<span class="go">   x.astype(int, errors=&#39;ignore&#39;)</span>
+<span class="go">   ref = x.name[-1]</span>
+
+<span class="gp">   #</span> Encoding of PED file
+<span class="go">   if ref==&quot;G&quot;:</span>
+<span class="go">     x = x.replace(0, &quot;G G&quot;)</span>
+<span class="go">     x = x.replace(1, &quot;G C&quot;)</span>
+<span class="go">     x = x.replace(2, &quot;C C&quot;)</span>
+
+<span class="go">   if ref==&quot;C&quot;:</span>
+<span class="go">     x = x.replace(0, &quot;C C&quot;)</span>
+<span class="go">     x = x.replace(1, &quot;C G&quot;)</span>
+<span class="go">     x = x.replace(2, &quot;G G&quot;)</span>
+
+<span class="go">   if ref==&quot;T&quot;:</span>
+<span class="go">     x = x.replace(0, &quot;T T&quot;)</span>
+<span class="go">     x = x.replace(1, &quot;T A&quot;)</span>
+<span class="go">     x = x.replace(2, &quot;A A&quot;)</span>
+
+<span class="go">   if ref==&quot;A&quot;:</span>
+<span class="go">     x = x.replace(0, &quot;A A&quot;)</span>
+<span class="go">     x = x.replace(1, &quot;A T&quot;)</span>
+<span class="go">     x = x.replace(2, &quot;T T&quot;)</span>
+
+
+<span class="go">   return x</span>
+
+
+<span class="gp">#</span> Extract SNPs names, which is in this format SNP_REFAllele
+<span class="gp">#</span>os.system<span class="o">(</span><span class="s2">&quot;cat &quot;</span>+input_file+<span class="s2">&quot; | head -n 1  &gt;&gt; snps.txt&quot;</span><span class="o">)</span>
+<span class="go">print(&quot;cat &quot;+input_file+&quot; | head -n 1  &gt;&gt; snps.txt&quot;)</span>
+
+
+<span class="go">data = pd.read_csv(&quot;snps.txt&quot;,index_col=None,header=None,sep=&quot;\s+&quot;).loc[:, 6:].T</span>
+
+<span class="gp">#</span> Make a directory to store chunks
+<span class="gp">#</span> Chunking is required because RAW file is usually large in size
+<span class="go">if not os.path.isdir(&quot;Chunks&quot;):</span>
+<span class="go">   os.mkdir(&quot;Chunks&quot;)</span>
+
+<span class="gp">#</span> Make <span class="s2">&quot;.MAP&quot;</span> file
+<span class="gp">#</span> RAW file does not contain the position and chromosome number information so, all other columns except 2nd are <span class="m">0</span>.
+<span class="go">maps = pd.DataFrame()</span>
+<span class="go">maps[0] = [0]*len(data)</span>
+<span class="go">maps[1] = data[0].values</span>
+<span class="go">maps[2] = [0]*len(data)</span>
+<span class="go">maps[3] = [0]*len(data)</span>
+<span class="go">maps.to_csv(&quot;final.map&quot;,sep=&quot;\t&quot;,header=False,index=False)</span>
+
+<span class="go">_smallraw  = os.listdir(&#39;./Chunks&#39;)</span>
+<span class="go">count=0</span>
+<span class="go">_smallraw = sorted(_smallraw)</span>
+
+<span class="gp">#</span> Encode each chunk which is same as that of ped file.
+<span class="go">for files in _smallraw:</span>
+<span class="go">   if &quot;.txt&quot; not in files:</span>
+<span class="go">      if count==0:</span>
+<span class="go">         count=1</span>
+<span class="go">         data2 = pd.read_csv(&quot;Chunks&quot;+os.sep+files,sep=&quot;\s+&quot;)</span>
+<span class="go">         data2[list(data[0].values)] = data2[list(data[0].values)].apply(converter)</span>
+<span class="go">         data2.to_csv(&quot;Chunks&quot;+os.sep+files+&quot;.txt&quot;,sep=&quot;\t&quot;,index=False,header=False)</span>
+
+<span class="go">     else:</span>
+<span class="go">         data2 = pd.read_csv(&quot;Chunks&quot;+os.sep+files,sep=&quot;\s+&quot;,names=list(data2.columns.values))</span>
+<span class="go">         data2[list(data[0].values)] = data2[list(data[0].values)].apply(converter)</span>
+<span class="go">         data2.to_csv(&quot;Chunks&quot;+os.sep+files+&quot;.txt&quot;,sep=&quot;\t&quot;,index=False,header=False)</span>
+<span class="go">final = pd.DataFrame()</span>
+<span class="gp">#</span>Merge all chunks
+<span class="go">for files in _smallraw:</span>
+<span class="go">   if &quot;.txt&quot; in files:</span>
+<span class="go">      if count==0:</span>
+<span class="go">         count=1</span>
+<span class="go">         final = pd.read_csv(&quot;Chunks&quot;+os.sep+files,sep=&quot;\t&quot;,index_col=None,low_memory=False,header=None)</span>
+<span class="go">      else:</span>
+<span class="go">         data2 = pd.read_csv(&quot;Chunks&quot;+os.sep+files,sep=&quot;\t&quot;,header=None,index_col=None,low_memory=False)</span>
+<span class="go">         final = final.append(data2, ignore_index=True)</span>
+<span class="go">         del data2</span>
+<span class="go">final.to_csv(&quot;final.ped&quot;,sep=&quot;\t&quot;,index=False,header=None)</span>
+
+<span class="gp">#</span> After this step you will have two files: final.ped and final.map
+</pre></div>
+</div>
+</div>
+<div class="section" id="raw-to-vcf">
+<h2>RAW to VCF<a class="headerlink" href="#raw-to-vcf" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span>Step <span class="m">1</span>. Convert Raw file to PED-MAP. See RAWtoPED-MAP.
+<span class="go">It generates two files: final.ped and final.map</span>
+<span class="gp">#</span>Step <span class="m">2</span>.
+<span class="go">./plink --file final --recode vcf --out output_file</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="raw-to-bed-bim-fam">
+<h2>RAW to BED-BIM-FAM<a class="headerlink" href="#raw-to-bed-bim-fam" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span>Step <span class="m">1</span>. Convert Raw file to PED-MAP. See RAWtoPED-MAP.
+<span class="go">It generates two files: final.ped and final.map</span>
+<span class="gp">#</span>Step <span class="m">2</span>.
+<span class="go">./plink --file final  --make-bed --out output_file</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="raw-to-gen-sample">
+<h2>RAW to GEN-SAMPLE<a class="headerlink" href="#raw-to-gen-sample" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span>Step <span class="m">1</span>. Convert Raw file to PED-MAP. See RAWtoPED-MAP.
+<span class="go">It generates two files: final.ped and final.map</span>
+<span class="gp">#</span>Step <span class="m">2</span>.
+<span class="go">./plink --file final  --export oxford --out output_file</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="raw-to-23andme">
+<h2>RAW to 23andme<a class="headerlink" href="#raw-to-23andme" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span>Step <span class="m">1</span>. Convert Raw file to PED-MAP. See RAWtoPED-MAP.
+<span class="go">It generates two files: final.ped and final.map</span>
+
+<span class="gp">#</span>Step <span class="m">2</span>. Convert PED-MAP to BED-BIM-FAM  --&gt; PED-MAPtoBED-BIM-FAM<span class="o">()</span>
+<span class="go">./plink --file input_file --make-bed --out output_file</span>
+
+<span class="go">2. Convert BED-BIM-FAM to 23andme --&gt; BED-BIM-FAMto23andme()</span>
+<span class="go">See BED-BIM-FAMto23andme</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="raw-to-ancestrydna">
+<h2>RAW to AncestryDNA<a class="headerlink" href="#raw-to-ancestrydna" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span>Step <span class="m">1</span>. Convert Raw file to PED-MAP. See RAWtoPED-MAP.
+<span class="go">It generates two files: final.ped and final.map</span>
+
+<span class="gp">#</span>Step <span class="m">2</span>. Convert PED-MAP to BED-BIM-FAM  --&gt; PED-MAPtoBED-BIM-FAM<span class="o">()</span>
+<span class="go">./plink --file input_file --make-bed --out output_file</span>
+
+<span class="gp">#</span>Step <span class="m">3</span>. Convert BED-BIM-FAM to 23andme --&gt; BED-BIM-FAMto23andme<span class="o">()</span>
+<span class="go">See BED-BIM-FAMto23andme</span>
+
+<span class="gp">#</span>Step <span class="m">4</span>. Convert 23andme to AncestryDNA --&gt; 23andmetoAncestryDNA<span class="o">()</span>
+<span class="go">See 23andmetoAncestryDNA</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="raw-to-haps-legend-sample">
+<h2>RAW to HAPS-LEGEND-SAMPLE<a class="headerlink" href="#raw-to-haps-legend-sample" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span>Step <span class="m">1</span>. Convert Raw file to PED-MAP.
+<span class="go">It generates two files: final.ped and final.map</span>
+<span class="gp">#</span>Step <span class="m">2</span>. Convert PED-MAP file to VCF.
+<span class="go">./plink --file  final --recode vcf --out output_file</span>
+<span class="gp">#</span>Step <span class="m">3</span>. Convert VCF file to HAPS-LEGEND-SAMPLE.
+<span class="go">bcftools convert output_file.vcf  -h  output_file2</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">GenotypeFilesConvertor</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="VCF.html">VCF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="BED-BIM-FAM.html">BED-BIM-FAM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PED-MAP.html">PED-MAP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GEN-SAMPLE.html">GEN-SAMPLE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="23andme.html">23andme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HAPS-LEGEND-SAMPLE.html">HAPS-LEGEND-SAMPLE</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">RAW</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#raw-to-ped-map">RAW to PED-MAP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#raw-to-vcf">RAW to VCF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#raw-to-bed-bim-fam">RAW to BED-BIM-FAM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#raw-to-gen-sample">RAW to GEN-SAMPLE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#raw-to-23andme">RAW to 23andme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#raw-to-ancestrydna">RAW to AncestryDNA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#raw-to-haps-legend-sample">RAW to HAPS-LEGEND-SAMPLE</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="AncestryDNA.html">AncestryDNA</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="HAPS-LEGEND-SAMPLE.html" title="previous chapter">HAPS-LEGEND-SAMPLE</a></li>
+      <li>Next: <a href="AncestryDNA.html" title="next chapter">AncestryDNA</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Muhammad Muneeb.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/RAW.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

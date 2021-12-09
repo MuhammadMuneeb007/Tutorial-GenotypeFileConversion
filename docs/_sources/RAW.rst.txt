@@ -1,0 +1,192 @@
+RAW
+===
+
+RAW to PED-MAP
+------------------------
+
+
+.. code-block:: console
+
+   def converter(x):
+      # Fill "NA" with '0 0'
+      x = x.fillna('0 0')
+      
+      # Convert numbers to integer
+      x.astype(int, errors='ignore')
+      ref = x.name[-1]
+
+      # Encoding of PED file
+      if ref=="G":
+        x = x.replace(0, "G G")
+        x = x.replace(1, "G C")
+        x = x.replace(2, "C C")
+      
+      if ref=="C":
+        x = x.replace(0, "C C")
+        x = x.replace(1, "C G")
+        x = x.replace(2, "G G")
+        
+      if ref=="T":
+        x = x.replace(0, "T T")
+        x = x.replace(1, "T A")
+        x = x.replace(2, "A A")
+        
+      if ref=="A":
+        x = x.replace(0, "A A")
+        x = x.replace(1, "A T")
+        x = x.replace(2, "T T")
+      
+      
+      return x
+      
+    
+   # Extract SNPs names, which is in this format SNP_REFAllele
+   #os.system("cat "+input_file+" | head -n 1  >> snps.txt")
+   print("cat "+input_file+" | head -n 1  >> snps.txt")
+    
+    
+   data = pd.read_csv("snps.txt",index_col=None,header=None,sep="\s+").loc[:, 6:].T
+   
+   # Make a directory to store chunks
+   # Chunking is required because RAW file is usually large in size
+   if not os.path.isdir("Chunks"):
+      os.mkdir("Chunks")   
+    
+   # Make ".MAP" file
+   # RAW file does not contain the position and chromosome number information so, all other columns except 2nd are 0.
+   maps = pd.DataFrame()
+   maps[0] = [0]*len(data)
+   maps[1] = data[0].values
+   maps[2] = [0]*len(data)
+   maps[3] = [0]*len(data)
+   maps.to_csv("final.map",sep="\t",header=False,index=False)
+    
+   _smallraw  = os.listdir('./Chunks')
+   count=0
+   _smallraw = sorted(_smallraw)
+
+   # Encode each chunk which is same as that of ped file. 
+   for files in _smallraw:
+      if ".txt" not in files:
+         if count==0:
+            count=1
+            data2 = pd.read_csv("Chunks"+os.sep+files,sep="\s+")
+            data2[list(data[0].values)] = data2[list(data[0].values)].apply(converter)
+            data2.to_csv("Chunks"+os.sep+files+".txt",sep="\t",index=False,header=False)
+
+        else:
+            data2 = pd.read_csv("Chunks"+os.sep+files,sep="\s+",names=list(data2.columns.values))
+            data2[list(data[0].values)] = data2[list(data[0].values)].apply(converter)
+            data2.to_csv("Chunks"+os.sep+files+".txt",sep="\t",index=False,header=False)
+   final = pd.DataFrame() 
+   #Merge all chunks 
+   for files in _smallraw:
+      if ".txt" in files:
+         if count==0:
+            count=1
+            final = pd.read_csv("Chunks"+os.sep+files,sep="\t",index_col=None,low_memory=False,header=None)
+         else:
+            data2 = pd.read_csv("Chunks"+os.sep+files,sep="\t",header=None,index_col=None,low_memory=False)
+            final = final.append(data2, ignore_index=True)
+            del data2
+   final.to_csv("final.ped",sep="\t",index=False,header=None)    
+
+   # After this step you will have two files: final.ped and final.map
+   
+   
+
+RAW to VCF
+------------------------
+
+.. code-block:: console
+
+   #Step 1. Convert Raw file to PED-MAP. See RAWtoPED-MAP. 
+   It generates two files: final.ped and final.map
+   #Step 2.
+   ./plink --file final --recode vcf --out output_file
+ 
+
+
+
+RAW to BED-BIM-FAM
+------------------------
+
+
+.. code-block:: console
+
+   #Step 1. Convert Raw file to PED-MAP. See RAWtoPED-MAP. 
+   It generates two files: final.ped and final.map
+   #Step 2.
+   ./plink --file final  --make-bed --out output_file
+ 
+
+
+
+RAW to GEN-SAMPLE
+------------------------
+
+
+.. code-block:: console
+
+   #Step 1. Convert Raw file to PED-MAP. See RAWtoPED-MAP. 
+   It generates two files: final.ped and final.map
+   #Step 2.
+   ./plink --file final  --export oxford --out output_file
+ 
+ 
+
+
+
+RAW to 23andme
+------------------------
+
+
+.. code-block:: console
+
+   #Step 1. Convert Raw file to PED-MAP. See RAWtoPED-MAP. 
+   It generates two files: final.ped and final.map
+   
+   #Step 2. Convert PED-MAP to BED-BIM-FAM  --> PED-MAPtoBED-BIM-FAM()
+   ./plink --file input_file --make-bed --out output_file
+
+   2. Convert BED-BIM-FAM to 23andme --> BED-BIM-FAMto23andme()
+   See BED-BIM-FAMto23andme
+   
+ 
+
+
+
+RAW to AncestryDNA
+------------------------
+
+
+.. code-block:: console
+
+   #Step 1. Convert Raw file to PED-MAP. See RAWtoPED-MAP. 
+   It generates two files: final.ped and final.map
+   
+   #Step 2. Convert PED-MAP to BED-BIM-FAM  --> PED-MAPtoBED-BIM-FAM()
+   ./plink --file input_file --make-bed --out output_file
+
+   #Step 3. Convert BED-BIM-FAM to 23andme --> BED-BIM-FAMto23andme()
+   See BED-BIM-FAMto23andme
+   
+   #Step 4. Convert 23andme to AncestryDNA --> 23andmetoAncestryDNA()
+   See 23andmetoAncestryDNA
+ 
+
+
+
+RAW to HAPS-LEGEND-SAMPLE
+--------------------------
+
+
+.. code-block:: console
+
+   #Step 1. Convert Raw file to PED-MAP. 
+   It generates two files: final.ped and final.map
+   #Step 2. Convert PED-MAP file to VCF.  
+   ./plink --file  final --recode vcf --out output_file
+   #Step 3. Convert VCF file to HAPS-LEGEND-SAMPLE.  
+   bcftools convert output_file.vcf  -h  output_file2
+   

@@ -1,0 +1,302 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>23andme &#8212; GenotypeFilesConvertor 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="HAPS-LEGEND-SAMPLE" href="HAPS-LEGEND-SAMPLE.html" />
+    <link rel="prev" title="GEN-SAMPLE" href="GEN-SAMPLE.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="andme">
+<h1>23andme<a class="headerlink" href="#andme" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="andme-to-ped-map">
+<h2>23andme to PED-MAP<a class="headerlink" href="#andme-to-ped-map" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span><span class="m">1</span>. Convert 23andme to BED-BIM-FAM --&gt; 23andmetoBED-BIM-FAM<span class="o">()</span>
+<span class="gp">#</span>That <span class="k">function</span> will generates three files 23andmetoBED.bed, 23andmetoBED.bim, and 23andmetoBED.fam
+<span class="gp">#</span> Step <span class="m">2</span>
+<span class="go">./plink --bfile 23andmetoBED --recode --out output_file</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="andme-to-raw">
+<h2>23andme to RAW<a class="headerlink" href="#andme-to-raw" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span><span class="m">1</span>. Convert 23andme to BED-BIM-FAM --&gt; 23andmetoBED-BIM-FAM<span class="o">()</span>
+<span class="gp">#</span>That <span class="k">function</span> will generates three files 23andmetoBED.bed, 23andmetoBED.bim, and 23andmetoBED.fam
+<span class="gp">#</span> Step <span class="m">2</span>
+<span class="go">./plink --bfile 23andmetoBED --recodeA --out output_file</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="andme-to-bed-bim-fam">
+<h2>23andme to BED-BIM-FAM<a class="headerlink" href="#andme-to-bed-bim-fam" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span> Place 23andme files in a new directory.
+<span class="gp">#</span> input_file is actually input directory.
+
+<span class="go">if not os.path.isdir(input_file):</span>
+<span class="go">   print(&quot;Directory &quot;+input_file+&quot; does not exists...! Kindly place 23andme files in that directory.&quot;)</span>
+<span class="go">   exit(0)</span>
+<span class="go">files = []</span>
+<span class="go">allfiles = os.listdir(&quot;./&quot;+input_file+&quot;/&quot;)</span>
+<span class="go">personname = []</span>
+<span class="go">sexinfo = &quot;0&quot;</span>
+<span class="go">for loop in allfiles:</span>
+<span class="go">   if &quot;.23andme&quot; in loop:</span>
+
+<span class="go">      data = loop.split(&quot;.&quot;)[0].split(&quot;_&quot;)</span>
+<span class="go">      personname.append(data[0])</span>
+<span class="go">      print(data)</span>
+<span class="go">      if data[5] ==&quot;XX&quot;:</span>
+<span class="go">         sexinfo = &quot;2&quot;</span>
+<span class="go">      elif data[5] ==&quot;XY&quot;:</span>
+<span class="go">         sexinfo = &quot;1&quot;</span>
+<span class="go">      else:</span>
+<span class="go">         sexinfo = &quot;0&quot;</span>
+<span class="gp">      #</span>os.rename<span class="o">(</span><span class="s2">&quot;tutorialsdir&quot;</span>,<span class="s2">&quot;tutorialsdirectory&quot;</span><span class="o">)</span>
+<span class="go">      os.system(&quot;./plink --23file ./&quot;+input_file+os.sep+loop+&quot; --snps-only --make-bed  --out ./&quot;+input_file+os.sep+data[0])</span>
+<span class="go">      if os.path.exists(&quot;./&quot;+input_file+os.sep+data[0]+&quot;.fam&quot;):</span>
+<span class="go">         data2 = pd.read_csv(&quot;./&quot;+input_file+os.sep+data[0]+&quot;.fam&quot;,header=None, sep=&quot;\s+&quot;)</span>
+<span class="go">         data2[0] = data[0]</span>
+<span class="go">         data2[1] = data[0]</span>
+<span class="go">         data2[4] = sexinfo</span>
+<span class="go">         data2.to_csv(&quot;./&quot;+input_file+os.sep+data[0]+&quot;.fam&quot;,sep=&quot;\t&quot;,header=False,index=False)</span>
+<span class="go">allfiles =  os.listdir(&quot;./&quot;+input_file+&quot;/&quot;)</span>
+<span class="go">count=0</span>
+<span class="go">files=[]</span>
+<span class="go">for loop in allfiles:</span>
+<span class="go">   if &quot;.txt&quot; in loop and &quot;.bed&quot; not in loop and &quot;.fam&quot; not in loop and &quot;.bim&quot; not in loop:</span>
+<span class="go">      print(loop)</span>
+<span class="go">      x = loop.split(&quot;_&quot;)[0]</span>
+<span class="go">      x = x + &quot;.fam&quot;</span>
+<span class="go">      me = os.path.exists(&quot;./&quot;+input_file+os.sep+x)</span>
+<span class="go">      if me==True:</span>
+<span class="go">         x = x.split(&quot;.&quot;)[0]</span>
+<span class="go">         x = &quot;./&quot;+input_file+os.sep+x +&quot;.bed &quot; + &quot;./&quot;+input_file+os.sep+x + &quot;.bim &quot; +  &quot;./&quot;+input_file+os.sep+x + &quot;.fam&quot;</span>
+<span class="go">         files.append(x)</span>
+<span class="go">      else:</span>
+<span class="go">         count=count+1</span>
+<span class="go">      print(count,&quot; People removed due to missing fam file&quot;)</span>
+<span class="go">with open(&quot;./&quot;+input_file+os.sep+&quot;All.txt&quot;, &quot;w&quot;) as filehandle:</span>
+<span class="go">   for listitem in files:</span>
+<span class="go">     filehandle.write(&#39;%s\n&#39; % listitem)</span>
+
+<span class="go">os.system(&quot;./plink --merge-list ./&quot;+input_file+os.sep+&quot;/All.txt --make-bed --out 23andmetoBED&quot;)</span>
+
+<span class="go">if os.path.exists(&quot;23andmetoBED.bed&quot;):</span>
+<span class="go">   exit(0)</span>
+<span class="go">else:</span>
+<span class="go">   allfiles =  os.listdir(&quot;./&quot;+input_file+&quot;/&quot;)</span>
+<span class="go">   count=0</span>
+<span class="go">   for loop in allfiles:</span>
+<span class="go">      if &quot;.bed&quot; in loop:</span>
+<span class="go">         x = loop</span>
+<span class="go">         x = x.split(&quot;.&quot;)[0]</span>
+
+<span class="go">         command = &quot;./plink --bfile ./&quot;+input_file+os.sep+x+&quot; --exclude 23andmetoBED-merge.missnp --make-bed --out ./&quot;+input_file+os.sep + x</span>
+<span class="go">         os.system(command)</span>
+<span class="go">   allfiles =  os.listdir(&quot;./&quot;+input_file+&quot;/&quot;)</span>
+<span class="go">   files=[]</span>
+
+<span class="go">   for loop in allfiles:</span>
+<span class="go">      if &quot;.txt&quot; in loop and &quot;.bed&quot; not in loop and &quot;.fam&quot; not in loop and &quot;.bim&quot; not in loop:</span>
+<span class="go">         print(loop)</span>
+<span class="go">         x = loop.split(&quot;_&quot;)[0]</span>
+<span class="go">         x = x + &quot;.fam&quot;</span>
+<span class="go">         me = os.path.exists(&quot;./&quot;+input_file+os.sep+x)</span>
+<span class="go">         if me==True:</span>
+<span class="go">            x = x.split(&quot;.&quot;)[0]</span>
+<span class="go">            x = &quot;./&quot;+input_file+os.sep+x +&quot;.bed &quot; + &quot;./&quot;+input_file+os.sep+x + &quot;.bim &quot; +  &quot;./&quot;+input_file+os.sep+x + &quot;.fam&quot;</span>
+<span class="go">            files.append(x)</span>
+<span class="go">         else:</span>
+<span class="go">            count=count+1</span>
+<span class="go">         print(count,&quot; People removed due to missing fam file&quot;)</span>
+<span class="go">   with open(&quot;./&quot;+input_file+os.sep+&quot;All.txt&quot;, &quot;w&quot;) as filehandle:</span>
+<span class="go">     for listitem in files:</span>
+<span class="go">         filehandle.write(&#39;%s\n&#39; % listitem)</span>
+<span class="go">   os.system(&quot;./plink --merge-list ./&quot;+input_file+os.sep+&quot;/All.txt --make-bed --out 23andmetoBED&quot;)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="andme-to-gen-sample">
+<h2>23andme to GEN-SAMPLE<a class="headerlink" href="#andme-to-gen-sample" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span><span class="m">1</span>. Convert 23andme to BED-BIM-FAM --&gt; 23andmetoBED-BIM-FAM<span class="o">()</span>
+<span class="gp">#</span>That <span class="k">function</span> will generates three files 23andmetoBED.bed, 23andmetoBED.bim, and 23andmetoBED.fam
+<span class="gp">#</span> Step <span class="m">2</span>
+<span class="go">./plink --bfile 23andmetoBED  --export oxford --out output_file</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="andme-to-vcf">
+<h2>23andme to VCF<a class="headerlink" href="#andme-to-vcf" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span><span class="m">1</span>. Convert 23andme to BED-BIM-FAM --&gt; 23andmetoBED-BIM-FAM<span class="o">()</span>
+<span class="gp">#</span>That <span class="k">function</span> will generates three files 23andmetoBED.bed, 23andmetoBED.bim, and 23andmetoBED.fam
+<span class="gp">#</span> Step <span class="m">2</span>
+<span class="go">./plink --bfile 23andmetoBED --recode vcf --out output_file</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="andme-to-ancestrydna">
+<h2>23andme to AncestryDNA<a class="headerlink" href="#andme-to-ancestrydna" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span> Make a directory in which AncestryDNA files will be saved.
+<span class="go">if not os.path.isdir(&quot;AncestryDNA&quot;):</span>
+<span class="go">   os.mkdir(&quot;AncestryDNA&quot;)</span>
+<span class="go">_23andmefiles  = os.listdir(&quot;./&quot;+input_file)</span>
+
+
+<span class="gp">#</span>Read files one-by-one
+<span class="go">for files in _23andmefiles:</span>
+<span class="gp">   #</span> 23andme files are in .txt file format
+<span class="go">   if &quot;23andme.txt&quot; in files and &quot;temp&quot; not in files:</span>
+
+<span class="gp">      #</span>Check size
+<span class="go">      if os.stat(&quot;./&quot;+input_file+os.sep+files).st_size == 0:</span>
+<span class="go">         continue</span>
+<span class="go">      else:</span>
+<span class="go">         print(files)</span>
+<span class="go">         data = pd.read_csv(&quot;./&quot;+input_file+os.sep+files,sep=&quot;\t&quot;, comment=&#39;#&#39;,header=None,low_memory=False)</span>
+<span class="go">         new = pd.DataFrame()</span>
+<span class="go">         new[&#39;Rsid&#39;] = data[0].values</span>
+<span class="go">         new[&#39;Chromosome&#39;] = data[1].values</span>
+<span class="go">         new[&#39;position&#39;] = data[2].values</span>
+
+
+<span class="gp">         #</span>Split genotype into allele1 and allele2
+<span class="go">         new[&#39;allele1&#39;] = data[3].str[0]</span>
+<span class="go">         new[&#39;allele2&#39;] =data[3].str[1]</span>
+
+<span class="gp">         #</span>Change chromosome numbers
+<span class="go">         new[&#39;Chromosome&#39;] = new[&#39;Chromosome&#39;].replace(23, &#39;X&#39;)</span>
+<span class="go">         new[&#39;Chromosome&#39;] = new[&#39;Chromosome&#39;].replace(24, &#39;Y&#39;)</span>
+<span class="go">         new[&#39;Chromosome&#39;] = new[&#39;Chromosome&#39;].replace(25, &#39;XY&#39;)</span>
+<span class="go">         new[&#39;Chromosome&#39;] = new[&#39;Chromosome&#39;].replace(26, &#39;MT&#39;)</span>
+
+
+<span class="gp">         #</span>Rename file name
+<span class="go">         files = files.replace(&quot;23andme&quot;,&quot;ancestry&quot;)</span>
+<span class="go">         new.to_csv(&quot;./AncestryDNA&quot;+os.sep+files, sep=&quot;\t&quot;,index=False)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="andme-to-haps-legend-sample">
+<h2>23andme to HAPS-LEGEND-SAMPLE<a class="headerlink" href="#andme-to-haps-legend-sample" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span><span class="m">1</span>. Convert 23andme to BED-BIM-FAM --&gt; 23andmetoBED-BIM-FAM<span class="o">()</span>
+<span class="gp">#</span>That <span class="k">function</span> will generates three files 23andmetoBED.bed, 23andmetoBED.bim, and 23andmetoBED.fam
+<span class="gp">#</span> Step <span class="m">2</span>
+<span class="go">./plink --bfile 23andmetoBED --recode vcf --out output_file</span>
+
+<span class="gp">#</span> Step <span class="m">3</span>
+<span class="go">bcftools convert output_file.vcf  -h  output_file2</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">GenotypeFilesConvertor</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="VCF.html">VCF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="BED-BIM-FAM.html">BED-BIM-FAM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PED-MAP.html">PED-MAP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GEN-SAMPLE.html">GEN-SAMPLE</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">23andme</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#andme-to-ped-map">23andme to PED-MAP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#andme-to-raw">23andme to RAW</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#andme-to-bed-bim-fam">23andme to BED-BIM-FAM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#andme-to-gen-sample">23andme to GEN-SAMPLE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#andme-to-vcf">23andme to VCF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#andme-to-ancestrydna">23andme to AncestryDNA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#andme-to-haps-legend-sample">23andme to HAPS-LEGEND-SAMPLE</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="HAPS-LEGEND-SAMPLE.html">HAPS-LEGEND-SAMPLE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RAW.html">RAW</a></li>
+<li class="toctree-l1"><a class="reference internal" href="AncestryDNA.html">AncestryDNA</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="GEN-SAMPLE.html" title="previous chapter">GEN-SAMPLE</a></li>
+      <li>Next: <a href="HAPS-LEGEND-SAMPLE.html" title="next chapter">HAPS-LEGEND-SAMPLE</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Muhammad Muneeb.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/23andme.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

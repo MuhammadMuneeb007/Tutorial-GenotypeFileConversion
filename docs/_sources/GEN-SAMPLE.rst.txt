@@ -1,0 +1,78 @@
+GEN-SAMPLE
+==========
+
+GEN-SAMPLE to PED-MAP
+------------------------
+
+
+.. code-block:: console
+
+   ./gtool  -G --g input_file.gen --s input_file.sample --ped output_file.ped --map output_file.map
+   
+
+GEN-SAMPLE to RAW
+------------------------
+
+.. code-block:: console
+
+   ./gtool  -G --g input_file.gen --s input_file.sample --ped output_file.ped --map output_file.map
+   ./plink --file output_file --recodeA --out output_file2
+
+
+GEN-SAMPLE to BED-BIM-FAM
+------------------------------
+
+
+.. code-block:: console
+
+   ./gtool  -G --g input_file.gen --s input_file.sample --ped output_file.ped --map output_file.map
+   ./plink --file output_file --make-bed --out output_file2
+
+
+GEN-SAMPLE to VCF
+------------------------
+
+
+.. code-block:: console
+
+   ./gtool  -G --g input_file.gen --s input_file.sample --ped output_file.ped --map output_file.map
+   ./plink --file output_file --recode vcf --out output_file2
+
+
+
+GEN-SAMPLE to 23andme
+------------------------
+
+
+.. code-block:: console
+
+   ./gtool  -G --g input_file.gen --s input_file.sample --ped output_file.ped --map output_file.map
+   ./plink --file output_file --recode vcf --out output_file2
+   1. Convert VCF to 23andme --> VCFto23andme()
+   See VCFto23andme
+
+
+GEN-SAMPLE to AncestryDNA
+------------------------------
+
+
+.. code-block:: console
+
+   ./gtool  -G --g input_file.gen --s input_file.sample --ped output_file.ped --map output_file.map
+   ./plink --file output_file --recode vcf --out output_file2
+   1. Convert VCF to 23andme --> VCFto23andme()
+   See VCFto23andme
+   2. Convert 23andme to AncestryDNA --> 23andmetoAncestryDNA()
+   See 23andmetoAncestryDNA
+
+GEN-SAMPLE to HAPS-LEGEND-SAMPLE
+--------------------------------------
+
+
+.. code-block:: console
+
+   ./gtool  -G --g input_file.gen --s input_file.sample --ped output_file.ped --map output_file.map
+   ./plink --file output_file --recode vcf --out output_file2
+   bcftools convert output_file2.vcf  -h  output_file3
+
+   

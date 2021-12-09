@@ -1,0 +1,101 @@
+BED-BIM-FAM
+===========
+
+BED-BIM-FAM to PED-MAP
+------------------------
+
+
+.. code-block:: console
+
+   ./plink --bfile input_file --recode --out output_file
+
+   
+
+BED-BIM-FAM to RAW
+------------------------
+
+.. code-block:: console
+
+   ./plink --bfile input_file --recodeA --out output_file
+
+
+
+BED-BIM-FAM to VCF
+------------------------
+
+
+.. code-block:: console
+
+   ./plink --bfile input_file --recode vcf --out output_file
+
+
+
+BED-BIM-FAM to GEN-SAMPLE
+------------------------------
+
+
+.. code-block:: console
+
+   ./plink --bfile input_file  --export oxford --out output_file
+ 
+
+
+
+BED-BIM-FAM to 23andme
+------------------------
+
+
+.. code-block:: console
+
+   #Input file should not include extension.
+   if not os.path.isdir("23andme"):
+      os.mkdir("23andme")
+
+   #Extract id of each person
+   data = pd.read_csv(input_file+".fam",sep="\s+",header=None)
+   print(data)
+   data = data [[0,1]]
+   data.to_csv("./23andme/temp_samples.txt",header=False,index=False,sep=" ")
+   
+   #Open that file
+   f = open("./23andme/temp_samples.txt", "r")
+   for x in f:
+
+      #Write each person name in a specific file
+      temp = open("./23andme/temp.txt", "w")
+      temp.write(x)
+      temp.close()
+      
+      #Extract each person from BED,BIM,FAM file and convert it to 23andme. 
+      os.system("./plink --bfile "+input_file.split(".")[0]+" --keep ./23andme/temp.txt --recode 23 --snps-only --out ./23andme/"+x.split(" ")[0]+"_"+x.split(" ")[0])
+
+
+
+BED-BIM-FAM to AncestryDNA
+------------------------------
+
+
+.. code-block:: console
+
+   #1. Convert BED-BIM-FAM to VCF --> BED-BIM-FAMtoVCF()
+   ./plink --bfile input_file --recode vcf --out output_file
+
+   #2. Convert VCF to AncestryDNA --> VCFtoAncestryDNA()
+   See VCFtoAncestryDNA
+
+BED-BIM-FAM to HAPS-LEGEND-SAMPLE
+--------------------------------------
+
+
+.. code-block:: console
+
+   #Input file should not include extension
+
+   #Convert BED-BIM-FAM to VCF --> BED-BIM-FAMtoVCF()
+   ./plink --bfile input_file --recode vcf --out output_file
+
+   #Convert VCF to HAPS-LEGEND-SAMPLE --> VCFtoHAPS-LEGEND-SAMPLE()
+   bcftools convert output_file.VCF  -h  output_file2
+
+
+   

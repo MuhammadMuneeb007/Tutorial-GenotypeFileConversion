@@ -1,0 +1,134 @@
+VCF
+=====
+
+
+VCF to PED-MAP
+------------------------
+
+
+.. code-block:: console
+
+   # Include extension of file. For example, input_file.vcf.
+   ./plink --vcf input_file.vcf --recode --out output_file
+   
+
+VCF to RAW
+------------------------
+
+.. code-block:: console
+
+   # Include extension of file. For example, input_file.vcf.
+   ./plink --vcf input_file.vcf --recodeA --out output_file
+ 
+
+
+VCF to BED-BIM-FAM
+------------------------
+
+
+.. code-block:: console
+
+   # Include extension of file. For example, input_file.vcf.
+   ./plink --vcf input_file.vcf --make-bed --out output_file
+ 
+
+
+
+VCF to GEN-SAMPLE
+------------------------
+
+
+.. code-block:: console
+
+   # Include extension of file. For example, input_file.vcf.
+   ./plink --vcf input_file.vcf  --export oxford --out output_file
+   
+
+
+VCF to 23andme
+------------------------
+
+
+.. code-block:: console
+
+   # Input file should not include extension
+   # Make a directory in which 23andme files will be saved.
+   if not os.path.isdir("23andme"):
+      os.mkdir("23andme")
+   
+   #Convert VCF to BED_BIM_FAM --> VCFtoBED_BIM_FAM() 
+   ./plink --vcf input_file+".vcf" --make-bed --out output_file
+   
+   # It will generate three files output_file.bed, output_file.fam, and output_file.bim
+
+   #Extract id of each person
+   os.system("bcftools query -l "+input_file+" > ./23andme/temp_samples.txt")
+   
+   #Open that file
+   f = open("./23andme/temp_samples.txt", "r")
+   for x in f:
+      #Write each person name in a specific file
+      temp = open("./23andme/temp.txt", "w")
+      
+      temp.write(x.strip('\n').split("_")[0] +"  "+x.strip('\n').split("_")[1])
+      temp.close()
+
+      #Extract each person from BED,BIM,FAM file and convert it to 23andme. 
+      os.system("./plink --bfile "+input_file.split(".")[0]+" --keep ./23andme/temp.txt --recode 23 --snps-only --out ./23andme/"+x.strip('\n'))
+   
+
+VCF to AncestryDNA
+------------------------
+
+
+.. code-block:: console
+
+   #Input file should not include extension
+   Convert VCF to 23andme --> VCFto23andme()
+
+   #Convert 23andme to AncestryDNA -->23andmeytoAncestryDNA()
+   # Make a directory in which AncestryDNA files will be saved.
+   if not os.path.isdir("AncestryDNA"):
+      os.mkdir("AncestryDNA")
+     #VCFto_23andme(input_file)
+   
+   #Read 23andme files
+   _23andmefiles  = os.listdir('./23andme')
+   
+   #Read files one-by-one
+   for files in _23andmefiles:
+      # 23andme files are in .txt file format
+      if ".txt" in files and "temp" not in files:
+         
+         #Check size
+         if os.stat("./23andme"+os.sep+files).st_size == 0:
+            continue
+         else:
+            data = pd.read_csv("./23andme"+os.sep+files,sep="\t",skiprows=8)
+            new = pd.DataFrame()
+            
+            
+            new['Rsid'] = data['# rsid'].values
+            new['Chromosome'] = data['chromosome'].values
+            new['position'] = data['position'].values
+            
+            #Split genotype into allele1 and allele2
+            new['allele1'] = data['genotype'].str[0]
+            new['allele2'] =data['genotype'].str[1]
+            
+            #Change chromosome numbers
+            new['Chromosome'] = new['Chromosome'].replace(23, 'X')
+            new['Chromosome'] = new['Chromosome'].replace(24, 'Y')
+            new['Chromosome'] = new['Chromosome'].replace(25, 'XY')
+            new['Chromosome'] = new['Chromosome'].replace(26, 'MT')
+            new.to_csv("./AncestryDNA"+os.sep+files, sep="\t")
+
+
+VCF to HAPS-LEGEND-SAMPLE
+--------------------------
+
+
+.. code-block:: console
+
+   bcftools convert input_file.vcf  -h  output_file
+   

@@ -1,0 +1,25 @@
+.. GenotypeFilesConvertor documentation master file, created by
+   sphinx-quickstart on Thu Sep 30 07:38:13 2021.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Welcome to GenotypeFilesConvertor's documentation!
+==================================================
+
+Sample dataset used for each format is available on `Google Drive <https://drive.google.com/drive/folders/161os6oKpd-nVyId2Roam57Bu-rOh8ssR?usp=sharing>`_.
+
+Content
+--------
+
+.. toctree::
+   VCF
+   BED-BIM-FAM
+   PED-MAP
+   GEN-SAMPLE
+   23andme
+   HAPS-LEGEND-SAMPLE
+   RAW
+   AncestryDNA
+
+
+ 

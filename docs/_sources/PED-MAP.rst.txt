@@ -1,0 +1,85 @@
+PED-MAP
+=======
+
+PED-MAP to VCF
+------------------------
+
+
+.. code-block:: console
+
+   ./plink --file input_file --recode vcf --out output_file
+   
+
+PED-MAP to RAW
+------------------------
+
+.. code-block:: console
+
+   ./plink --file input_file --recodeA --out output_file
+
+
+
+PED-MAP to BED-BIM-FAM
+------------------------
+
+
+.. code-block:: console
+
+   ./plink --file input_file --make-bed --out output_file
+
+
+
+PED-MAP to GEN-SAMPLE
+------------------------
+
+
+.. code-block:: console
+
+   ./plink --file  input_file --export oxford --out output_file
+ 
+
+
+
+PED-MAP to 23andme
+------------------------
+
+
+.. code-block:: console
+
+   #Input file should not include extension
+   1. Convert PED-MAP to BED-BIM-FAM  --> PED-MAPtoBED-BIM-FAM()
+   ./plink --file input_file --make-bed --out output_file
+
+   2. Convert BED-BIM-FAM to 23andme --> BED-BIM-FAMto23andme()
+   See BED-BIM-FAMto23andme
+   
+
+
+
+PED-MAP to AncestryDNA
+------------------------
+
+
+.. code-block:: console
+
+   #Input file should not include extension
+   1. Convert PED-MAP to VCF --> PED-MAPtoVCF()
+   ./plink --file input_file --recode vcf --out output_file
+
+   2. Convert VCF to AncestryDNA --> VCFtoAncestryDNA()
+   See VCFtoAncestryDNA
+
+
+
+PED-MAP to HAPS-LEGEND-SAMPLE
+--------------------------------
+
+
+.. code-block:: console
+
+   #Input file should not include extension
+   1. Convert PED-MAP to VCF --> PED-MAPtoVCF()
+   ./plink --file input_file --recode vcf --out output_file
+
+   2. Convert VCF to HAPS-LEGEND-SAMPLE --> VCFtoHAPS-LEGEND-SAMPLE()
+   bcftools convert output_file.vcf  -h  output_file2

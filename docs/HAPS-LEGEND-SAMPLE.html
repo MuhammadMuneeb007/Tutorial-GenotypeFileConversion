@@ -1,0 +1,217 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HAPS-LEGEND-SAMPLE &#8212; GenotypeFilesConvertor 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="RAW" href="RAW.html" />
+    <link rel="prev" title="23andme" href="23andme.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="haps-legend-sample">
+<h1>HAPS-LEGEND-SAMPLE<a class="headerlink" href="#haps-legend-sample" title="Permalink to this headline">¶</a></h1>
+<p>We used files from <a class="reference external" href="https://mathgen.stats.ox.ac.uk/impute/data_download_hapmap3_r2.html">hapmap3_r2_b36</a>. to demonstrate the conversion to other formats.</p>
+<ol class="arabic simple">
+<li><p>There is a separate file for each chromosome, and we have to modify the X.legend file before further processing.</p></li>
+<li><p>X.Haps and X.legend file should be compressed in gz format before further processing.</p></li>
+</ol>
+<p>LEGEND file before</p>
+<a class="reference internal image-reference" href="_images/legendbefore.jpg"><img alt="alternate text" class="align-center" src="_images/legendbefore.jpg" style="width: 200.0px; height: 150.0px;" /></a>
+<p>LEGEND file after</p>
+<a class="reference internal image-reference" href="_images/legendafter.jpg"><img alt="alternate text" class="align-center" src="_images/legendafter.jpg" style="width: 200.0px; height: 150.0px;" /></a>
+<div class="section" id="haps-legend-sample-to-ped-map">
+<h2>HAPS-LEGEND-SAMPLE to PED-MAP<a class="headerlink" href="#haps-legend-sample-to-ped-map" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span> Step <span class="m">1</span>.  Convert HAPS-LEGEND-SAMPLE to VCF.
+<span class="gp">#</span> It will generate one file <span class="s2">&quot;output_file.vcf&quot;</span>
+<span class="gp">#</span> Step <span class="m">2</span>.
+<span class="go">./plink --vcf output_file --recode --out output_file2</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="haps-legend-sample-to-raw">
+<h2>HAPS-LEGEND-SAMPLE to RAW<a class="headerlink" href="#haps-legend-sample-to-raw" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span> Step <span class="m">1</span>.  Convert HAPS-LEGEND-SAMPLE to VCF.
+<span class="gp">#</span> It will generate one file <span class="s2">&quot;output_file.vcf&quot;</span>
+<span class="gp">#</span> Step <span class="m">2</span>.
+<span class="go">./plink --vcf output_file --recodeA --out output_file2</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="haps-legend-sample-to-bed-bim-fam">
+<h2>HAPS-LEGEND-SAMPLE to BED-BIM-FAM<a class="headerlink" href="#haps-legend-sample-to-bed-bim-fam" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span> Step <span class="m">1</span>.  Convert HAPS-LEGEND-SAMPLE to VCF.
+<span class="gp">#</span> It will generate one file <span class="s2">&quot;output_file.vcf&quot;</span>
+<span class="gp">#</span> Step <span class="m">2</span>.
+<span class="go">./plink --vcf output_file --make-bed --out output_file2</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="haps-legend-sample-to-gen-sample">
+<h2>HAPS-LEGEND-SAMPLE to GEN-SAMPLE<a class="headerlink" href="#haps-legend-sample-to-gen-sample" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span> Step <span class="m">1</span>.  Convert HAPS-LEGEND-SAMPLE to VCF.
+<span class="gp">#</span> It will generate one file <span class="s2">&quot;output_file.vcf&quot;</span>
+<span class="gp">#</span> Step <span class="m">2</span>.
+<span class="go">./plink --vcf output_file --export oxford --out output_file2</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="haps-legend-sample-to-23andme">
+<h2>HAPS-LEGEND-SAMPLE to 23andme<a class="headerlink" href="#haps-legend-sample-to-23andme" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span> Step <span class="m">1</span>.  Convert HAPS-LEGEND-SAMPLE to VCF.
+<span class="gp">#</span> It will generate one file <span class="s2">&quot;output_file.vcf&quot;</span>
+<span class="go">if not os.path.isdir(&quot;23andme&quot;):</span>
+<span class="go">   os.mkdir(&quot;23andme&quot;)</span>
+
+<span class="go">VCFtoBED_BIM_FAM(&quot;output_file.vcf&quot;)</span>
+<span class="go">os.system(&quot;bcftools query -l output_file.vcf &gt; ./23andme/temp_samples.txt&quot;)</span>
+<span class="go">f = open(&quot;./23andme/temp_samples.txt&quot;, &quot;r&quot;)</span>
+<span class="go">for x in f:</span>
+<span class="go">   temp = open(&quot;./23andme/temp.txt&quot;, &quot;w&quot;)</span>
+<span class="go">   print(&quot;X&quot;)</span>
+<span class="go">   temp.write(x.strip(&#39;\n&#39;)+&quot; &quot;+x.strip(&#39;\n&#39;))</span>
+<span class="go">   temp.write(&#39;\n&#39;)</span>
+
+<span class="go">   temp.close()</span>
+<span class="go">    os.system(&quot;./plink --bfile output_file --keep ./23andme/temp.txt --recode 23 --snps-only --out ./23andme/&quot;+x.strip(&#39;\n&#39;)+&quot;.23andme&quot;)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="haps-legend-sample-to-ancestrydna">
+<h2>HAPS-LEGEND-SAMPLE to AncestryDNA<a class="headerlink" href="#haps-legend-sample-to-ancestrydna" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span> Step <span class="m">1</span>.  HAPS-LEGEND-SAMPLE to 23andme
+<span class="gp">#</span> Step <span class="m">2</span>. 23andme to AncestryDNA
+<span class="go">See (23andme to AncestryDNA)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="haps-legend-sample-to-vcf">
+<h2>HAPS-LEGEND-SAMPLE to VCF<a class="headerlink" href="#haps-legend-sample-to-vcf" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">data = pd.read_csv(&quot;hapmap3_r2_b36_chr1.legend&quot;,index_col=False, sep=&quot;\s+&quot;)</span>
+<span class="gp">#</span>Create a new ID column <span class="k">for</span> legend file
+<span class="go">data[&quot;ID&quot;] = &quot;1:&quot;+data[&#39;position&#39;].astype(str)+&quot;_&quot;+data[&quot;a0&quot;]+&quot;_&quot;+data[&quot;a1&quot;]</span>
+<span class="go">data =data[[&#39;ID&#39;,&#39;position&#39;,&#39;a0&#39;,&#39;a1&#39;]]</span>
+<span class="go">data.to_csv(&quot;hapmap3_r2_b36_chr1.legend&quot;,index=False, sep=&quot;\t&quot;)</span>
+
+<span class="gp">#</span>Zip the legend file
+<span class="go">os.system(&quot;gzip hapmap3_r2_b36_chr1.legend&quot;)</span>
+<span class="gp">#</span>Rename hapmap3_r2_b36_chr1.haps to hapmap3_r2_b36_chr1.hap
+<span class="go">os.rename(&quot;hapmap3_r2_b36_chr1.haps.gz&quot;,&quot;hapmap3_r2_b36_chr1.hap.gz&quot;)</span>
+
+<span class="gp">#</span>Rename hapmap3_r2_b36_all.sample to hapmap3_r2_b36_chr1.samples
+<span class="go">os.rename(&quot;hapmap3_r2_b36_all.sample&quot;,&quot;hapmap3_r2_b36_chr1.samples&quot;)</span>
+
+<span class="go">os.system(&quot;bcftools convert  --haplegendsample2vcf  hapmap3_r2_b36_chr1  -o  output_file.vcf&quot;)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">GenotypeFilesConvertor</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="VCF.html">VCF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="BED-BIM-FAM.html">BED-BIM-FAM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PED-MAP.html">PED-MAP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GEN-SAMPLE.html">GEN-SAMPLE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="23andme.html">23andme</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">HAPS-LEGEND-SAMPLE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#haps-legend-sample-to-ped-map">HAPS-LEGEND-SAMPLE to PED-MAP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#haps-legend-sample-to-raw">HAPS-LEGEND-SAMPLE to RAW</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#haps-legend-sample-to-bed-bim-fam">HAPS-LEGEND-SAMPLE to BED-BIM-FAM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#haps-legend-sample-to-gen-sample">HAPS-LEGEND-SAMPLE to GEN-SAMPLE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#haps-legend-sample-to-23andme">HAPS-LEGEND-SAMPLE to 23andme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#haps-legend-sample-to-ancestrydna">HAPS-LEGEND-SAMPLE to AncestryDNA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#haps-legend-sample-to-vcf">HAPS-LEGEND-SAMPLE to VCF</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="RAW.html">RAW</a></li>
+<li class="toctree-l1"><a class="reference internal" href="AncestryDNA.html">AncestryDNA</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="23andme.html" title="previous chapter">23andme</a></li>
+      <li>Next: <a href="RAW.html" title="next chapter">RAW</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Muhammad Muneeb.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/HAPS-LEGEND-SAMPLE.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
